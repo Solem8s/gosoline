@@ -13,6 +13,7 @@ import (
 	"github.com/pkg/errors"
 	"io"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -248,7 +249,10 @@ func WithLoggerSettingsFromConfig(app *App) {
 		settings := &loggerSettings{}
 		config.UnmarshalKey("mon.logger", settings)
 
-		outputFile, err := os.OpenFile(settings.Output.File, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+		ex, _ := os.Executable()
+		loggingFilePath := filepath.Join(filepath.Dir(ex), settings.Output.File)
+
+		outputFile, err := os.OpenFile(loggingFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
 			return err
 		}
