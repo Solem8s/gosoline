@@ -34,6 +34,7 @@ type Client interface {
 	SetTimeout(timeout time.Duration)
 	SetUserAgent(ua string)
 	SetProxyUrl(p string)
+	RemoveProxyUrl()
 	SetCookies(cs []*http.Cookie)
 	SetCookie(c *http.Cookie)
 	SetRedirectValidator(allowRequest func(request *http.Request) bool)
@@ -132,6 +133,10 @@ func (c *client) SetUserAgent(ua string) {
 
 func (c *client) SetProxyUrl(p string) {
 	c.http.SetProxy(p)
+}
+
+func (c *client) RemoveProxyUrl() {
+	c.http.RemoveProxy()
 }
 
 func (c *client) AddRetryCondition(f RetryConditionFunc) {
