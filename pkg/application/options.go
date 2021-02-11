@@ -250,12 +250,7 @@ func WithLoggerSettingsFromConfig(app *App) {
 		config.UnmarshalKey("mon.logger", settings)
 
 		ex, _ := os.Executable()
-		var loggingFilePath string
-		if settings.Output.File == "/dev/stdout" {
-			loggingFilePath = settings.Output.File
-		} else {
-			loggingFilePath = filepath.Join(filepath.Dir(ex), settings.Output.File)
-		}
+		loggingFilePath := filepath.Join(filepath.Dir(ex), settings.Output.File)
 
 		outputFile, err := os.OpenFile(loggingFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
