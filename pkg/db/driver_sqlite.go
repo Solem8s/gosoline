@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/golang-migrate/migrate/v4/database"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/mattn/go-sqlite3"
 	"net/url"
 	"os"
@@ -41,5 +42,8 @@ func (m *sqliteDriverFactory) GetDSN(settings Settings) string {
 }
 
 func (m *sqliteDriverFactory) GetMigrationDriver(db *sql.DB, database string, migrationsTable string) (database.Driver, error) {
-	return nil, nil
+	return sqlite3.WithInstance(db, &sqlite3.Config{
+		DatabaseName:    database,
+		MigrationsTable: migrationsTable,
+	})
 }
