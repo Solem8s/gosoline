@@ -6,6 +6,8 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/jmoiron/sqlx"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -41,7 +43,10 @@ func runMigrations(logger mon.Logger, settings Settings, db *sqlx.DB) {
 		logger.Panic(err, "could not get migration driver")
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(settings.Migrations.Path, settings.Driver, driver)
+	ex, _ := os.Executable()
+	migrationsAbsoluteFilePath := filepath.Join(filepath.Dir(ex), settings.Migrations.Path)
+
+	m, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", migrationsAbsoluteFilePath), settings.Driver, driver)
 
 	if err != nil {
 		logger.Panic(err, "could not initialize migrator for db migrations")
