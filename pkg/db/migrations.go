@@ -8,6 +8,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -46,7 +47,13 @@ func runMigrations(logger mon.Logger, settings Settings, db *sqlx.DB) {
 	ex, _ := os.Executable()
 	migrationsAbsoluteFilePath := filepath.Join(filepath.Dir(ex), settings.Migrations.Path)
 
-	m, err := migrate.NewWithDatabaseInstance(fmt.Sprintf("file://%s", migrationsAbsoluteFilePath), settings.Driver, driver)
+	filePath := fmt.Sprintf("file://%s", migrationsAbsoluteFilePath)
+
+	if runtime.GOOS == "windows" {
+		filePath = migrationsAbsoluteFilePath
+	}
+
+	m, err := migrate.NewWithDatabaseInstance(filePath, settings.Driver, driver)
 
 	if err != nil {
 		logger.Panic(err, "could not initialize migrator for db migrations")
