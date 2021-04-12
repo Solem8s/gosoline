@@ -35,6 +35,7 @@ type Client interface {
 	SetUserAgent(ua string)
 	SetProxyUrl(p string)
 	RemoveProxyUrl()
+	SetCookieJar(jar http.CookieJar)
 	SetCookies(cs []*http.Cookie)
 	SetCookie(c *http.Cookie)
 	SetRedirectValidator(allowRequest func(request *http.Request) bool)
@@ -113,6 +114,10 @@ func (c *client) NewJsonRequest() *Request {
 
 func (c *client) NewXmlRequest() *Request {
 	return c.NewRequest().WithHeader(HdrAccept, ContentTypeApplicationXml)
+}
+
+func (c *client) SetCookieJar(jar http.CookieJar) {
+	c.http.SetCookieJar(jar)
 }
 
 func (c *client) SetCookie(hc *http.Cookie) {
