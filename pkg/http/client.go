@@ -37,6 +37,7 @@ type Client interface {
 	RemoveProxyUrl()
 	SetCookieJar(jar http.CookieJar)
 	SetCookies(cs []*http.Cookie)
+	DeleteCookies()
 	SetCookie(c *http.Cookie)
 	SetRedirectValidator(allowRequest func(request *http.Request) bool)
 	AddRetryCondition(f RetryConditionFunc)
@@ -126,6 +127,10 @@ func (c *client) SetCookie(hc *http.Cookie) {
 
 func (c *client) SetCookies(cs []*http.Cookie) {
 	c.http.SetCookies(cs)
+}
+
+func (c *client) DeleteCookies() {
+	c.http.Cookies = []*http.Cookie{}
 }
 
 func (c *client) SetTimeout(timeout time.Duration) {
